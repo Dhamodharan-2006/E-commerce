@@ -1,6 +1,5 @@
 from pathlib import Path
 from datetime import timedelta
-import dj_database_url
 import environ
 import os
 
@@ -28,6 +27,8 @@ INSTALLED_APPS = [
     'products',
     'orders',
 ]
+
+import dj_database_url
 
 DATABASES = {
     'default': dj_database_url.config(
