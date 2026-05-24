@@ -13,7 +13,7 @@ function ProductDetail() {
   const [added, setAdded] = useState(false);
 
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/products/${id}/`)
+    axios.get(`https://ecommerce-backend-hanm.onrender.com/api/products/${id}/`)
       .then(res => { setProduct(res.data); setLoading(false); })
       .catch(() => { setLoading(false); });
   }, [id]);
