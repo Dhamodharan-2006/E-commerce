@@ -1,0 +1,56 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Dark mode global styles */
+body.dark {
+  background: #0f172a;
+  color: #f1f5f9;
+}
+
+/* Hamburger hidden on desktop */
+.hamburger {
+  display: none !important;
+}
+
+/* Desktop nav visible */
+.desktop-nav {
+  display: flex !important;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block !important;
+  }
+
+  .desktop-nav {
+    display: none !important;
+  }
+}
+
+/* Dark mode card styles */
+.dark-card {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #4f46e5;
+  border-radius: 3px;
+}
