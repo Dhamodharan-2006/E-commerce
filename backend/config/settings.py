@@ -82,7 +82,7 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    'https://your-frontend-url.com',
+    'https://ecommerce-frontend-vpjd.onrender.com',
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

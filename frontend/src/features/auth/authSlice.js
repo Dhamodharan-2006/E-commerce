@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const API = 'http://localhost:8000/api/auth/';
+const API = 'https://ecommerce-backend-hanm.onrender.com/api/auth/';
 
 // Read token from localStorage on app start
 const savedToken = localStorage.getItem('token');
