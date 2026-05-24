@@ -32,7 +32,7 @@ import dj_database_url
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=env('DATABASE_URL')
+        default=os.environ.get('DATABASE_URL')
     )
 }
 
@@ -68,16 +68,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ecommerce_db',
-        'USER': 'ecommerce_user',
-        'PASSWORD': 'Test1234!',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
