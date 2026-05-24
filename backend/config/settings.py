@@ -32,7 +32,7 @@ import dj_database_url
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=env('postgresql://ecommerce_db_0wzn_user:mTRy1ePPYc95p8HCNJQ6Ow8gBRSVGJbQ@dpg-d89dm73eo5us738of78g-a.virginia-postgres.render.com/ecommerce_db_0wzn')
+        default=env('DATABASE_URL')
     )
 }
 
