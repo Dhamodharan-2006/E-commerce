@@ -20,7 +20,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
     'django.contrib.staticfiles',
     'cloudinary',
     'rest_framework',
@@ -41,7 +40,7 @@ DATABASES = {
 
 STORAGES = {
     "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
@@ -127,3 +126,11 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Cloudinary config
+import cloudinary
+cloudinary.config(
+    cloud_name=os.environ.get('dwf81o0zg'),
+    api_key=os.environ.get('818977763352655'),
+    api_secret=os.environ.get('CLqqzrzEDJEBqmJgAB5T5OISmrc'),
+)
