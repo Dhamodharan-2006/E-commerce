@@ -1,5 +1,10 @@
 from pathlib import Path
 from datetime import timedelta
+import dj_database_url
+import environ
+import os
+
+env = environ.Env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,6 +28,12 @@ INSTALLED_APPS = [
     'products',
     'orders',
 ]
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=env('postgresql://ecommerce_db_0wzn_user:mTRy1ePPYc95p8HCNJQ6Ow8gBRSVGJbQ@dpg-d89dm73eo5us738of78g-a.virginia-postgres.render.com/ecommerce_db_0wzn')
+    )
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -105,5 +116,6 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
