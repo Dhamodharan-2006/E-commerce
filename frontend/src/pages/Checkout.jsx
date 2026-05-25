@@ -10,7 +10,6 @@ import { useNavigate as useNav } from 'react-router-dom';
 function Checkout() {
   const dispatch  = useDispatch();
   const navigate  = useNav();
-  const [product, setProduct] = useState(null);
   const { items, totalAmount } = useSelector(s => s.cart);
   const { token: reduxToken }  = useSelector(s => s.auth);
   const token = reduxToken || localStorage.getItem('token');
@@ -111,13 +110,7 @@ function Checkout() {
             {items.map(item => (
               <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #f3f4f6', gap: 10 }}>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', flex: 1, minWidth: 0 }}>
-                  <img src={
-              product.image_url
-                ? product.image_url
-                : product.image
-                ? `${product.image}`
-                : 'https://placehold.co/400x400?text=No+Image'
-            }
+                  <img src={item.image_url || (item.image ? `https://ecommerce-backend-hanm.onrender.com/media/${item.image}` : 'https://placehold.co/44x44?text=?')}
                     alt={item.name} onError={e => { e.target.src = 'https://placehold.co/44x44?text=?'; }}
                     style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
                   <div style={{ minWidth: 0 }}>

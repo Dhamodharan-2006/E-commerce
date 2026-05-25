@@ -52,7 +52,7 @@ function Signup() {
             <div style={{ position: 'relative' }}>
               <input name="password" type={show ? 'text' : 'password'} required placeholder="Min 6 characters" value={form.password}
                 onChange={e => setForm({ ...form, password: e.target.value })}
-                style={{ width: '100%', padding: '10px 44px 10px 12px', border: '1.5px solid #d1d5db', borderRadius: 8, fontSize: 14, outline: 'none' }} />
+                style={{ width: '100%',boxSizing: 'border-box',  padding: '10px 44px 10px 12px', border: '1.5px solid #d1d5db', borderRadius: 8, fontSize: 14, outline: 'none' }} />
               <button type="button" onClick={() => setShow(!show)}
                 style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 16 }}>
                 {show ? '🙈' : '👁️'}

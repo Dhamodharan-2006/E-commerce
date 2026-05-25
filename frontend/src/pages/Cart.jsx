@@ -1,13 +1,11 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart, increaseQty, decreaseQty } from '../features/cart/cartSlice';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 import { useDarkStyle } from '../app/useDarkStyle';
 
 function Cart() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
   const { items, totalAmount } = useSelector(s => s.cart);
   const { token }              = useSelector(s => s.auth);
   const { page, card, text, subText, darkMode } = useDarkStyle();
@@ -31,13 +29,7 @@ function Cart() {
         {items.map(item => (
           <div key={item.id} style={{ ...card, borderRadius: 10, padding: 14, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
             <img
-              src={
-              product.image_url
-                ? product.image_url
-                : product.image
-                ? `${product.image}`
-                : 'https://placehold.co/400x400?text=No+Image'
-            }
+              src={item.image_url || (item.image ? `https://ecommerce-backend-hanm.onrender.com/media/${item.image}` : 'https://placehold.co/80x80?text=?')}
               alt={item.name}
               onError={e => { e.target.src = 'https://placehold.co/80x80?text=?'; }}
               style={{ width: 70, height: 70, objectFit: 'cover', borderRadius: 8, flexShrink: 0 }}
