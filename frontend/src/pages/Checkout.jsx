@@ -10,6 +10,7 @@ import { useNavigate as useNav } from 'react-router-dom';
 function Checkout() {
   const dispatch  = useDispatch();
   const navigate  = useNav();
+  const [product, setProduct] = useState(null);
   const { items, totalAmount } = useSelector(s => s.cart);
   const { token: reduxToken }  = useSelector(s => s.auth);
   const token = reduxToken || localStorage.getItem('token');

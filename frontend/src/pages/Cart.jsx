@@ -1,11 +1,13 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart, increaseQty, decreaseQty } from '../features/cart/cartSlice';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useDarkStyle } from '../app/useDarkStyle';
 
 function Cart() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
   const { items, totalAmount } = useSelector(s => s.cart);
   const { token }              = useSelector(s => s.auth);
   const { page, card, text, subText, darkMode } = useDarkStyle();
