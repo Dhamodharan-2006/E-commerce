@@ -11,6 +11,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from datetime import timedelta
+import os
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -58,10 +59,16 @@ def register(request):
         traceback.print_exc()
         return Response({'error': str(e)}, status=500)
 
+import resend
+
 def send_otp_email(email, username, otp):
-    send_mail(
-        'Your OTP - Ecommerce Verification',
-        f'''Hello {username},
+    resend.api_key = os.environ.get('RESEND_API_KEY')
+    
+    resend.Emails.send({
+        "from": "onboarding@resend.dev",
+        "to": email,
+        "subject": "Your OTP - Ecommerce Verification",
+        "text": f"""Hello {username},
 
 Your OTP for account verification is:
 
@@ -71,12 +78,8 @@ This OTP is valid for 10 minutes.
 
 Do not share this OTP with anyone.
 
-Thank you!''',
-        'onboarding@resend.dev',  # ← change this line
-        [email],
-        fail_silently=False,
-    )
-
+Thank you!"""
+    })
 
 @api_view(['POST'])
 def verify_otp(request):
