@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearCart } from '../features/cart/cartSlice';
-import { useNavigate } from 'react-router-native';
+import { useNavigate } from 'react-router-dom';
 import API from '../app/axiosConfig';
 
 /* Note: keep your existing import — just replace the JSX */
