@@ -29,7 +29,13 @@ function Cart() {
         {items.map(item => (
           <div key={item.id} style={{ ...card, borderRadius: 10, padding: 14, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
             <img
-              src={item.image_url || (item.image ? `https://ecommerce-backend-hanm.onrender.com/media/${item.image}` : 'https://placehold.co/80x80?text=?')}
+              src={
+              product.image_url
+                ? product.image_url
+                : product.image
+                ? `${product.image}`
+                : 'https://placehold.co/400x400?text=No+Image'
+            }
               alt={item.name}
               onError={e => { e.target.src = 'https://placehold.co/80x80?text=?'; }}
               style={{ width: 70, height: 70, objectFit: 'cover', borderRadius: 8, flexShrink: 0 }}
