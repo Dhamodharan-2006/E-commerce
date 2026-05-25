@@ -50,6 +50,7 @@ const authSlice = createSlice({
     loading: false,
     error: null,
     message: null,
+    otp: null,
   },
   reducers: {
     logout: (state) => {
@@ -60,6 +61,7 @@ const authSlice = createSlice({
     clearMessage: (state) => {
       state.message = null;
       state.error = null;
+      state.otp = null;
     },
   },
   extraReducers: (builder) => {
@@ -67,6 +69,7 @@ const authSlice = createSlice({
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
+        
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
@@ -84,6 +87,7 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.message = action.payload.message;
+        state.otp = action.payload.otp || null;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;

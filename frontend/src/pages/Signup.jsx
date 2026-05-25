@@ -16,8 +16,13 @@ function Signup() {
     setLocalError('');
     const result = await dispatch(registerUser(form));
     if (registerUser.fulfilled.match(result)) {
-      navigate('/verify-otp', { state: { email: form.email } });
-    } else {
+  navigate('/verify-otp', {
+    state: {
+      email: form.email,
+      otp: result.payload.otp // 👈 pass OTP to verify page
+    }
+  });
+} else {
       setLocalError(result.payload?.error || 'Registration failed');
     }
   };

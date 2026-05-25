@@ -1,7 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
-from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
@@ -9,10 +8,7 @@ from .models import CustomUser
 from .serializers import CustomTokenObtainPairSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from django.utils import timezone
-from datetime import timedelta
-import os
-from trycourier import Courier
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
@@ -29,10 +25,13 @@ def register(request):
         if CustomUser.objects.filter(email=email).exists():
             existing = CustomUser.objects.get(email=email)
             if not existing.is_verified:
-                # Resend OTP if not verified
                 otp = existing.generate_otp()
-                send_otp_email(email, username, otp)
-                return Response({'message': 'OTP resent to your email.', 'email': email})
+                # ✅ Return OTP directly in response
+                return Response({
+                    'message': 'OTP generated.',
+                    'email': email,
+                    'otp': otp  # 👈 displayed on screen
+                })
             return Response({'error': 'Email already exists'}, status=400)
 
         if CustomUser.objects.filter(username=username).exists():
@@ -47,12 +46,12 @@ def register(request):
 
         otp = user.generate_otp()
 
-        try:
-            send_otp_email(email, username, otp)
-        except Exception as e:
-            return Response({'error': 'Account created but email failed: ' + str(e)}, status=500)
-
-        return Response({'message': 'OTP sent to your email!', 'email': email})
+        # ✅ Return OTP directly in response
+        return Response({
+            'message': 'OTP generated. Please verify your account.',
+            'email': email,
+            'otp': otp  # 👈 displayed on screen
+        })
 
     except Exception as e:
         import traceback
@@ -60,21 +59,6 @@ def register(request):
         return Response({'error': str(e)}, status=500)
 
 
-
-def send_otp_email(email, username, otp):
-    client = Courier(auth_token=os.environ.get('COURIER_API_KEY'))
-    
-    client.send_message(
-        message={
-            "to": {
-                "email": email,
-            },
-            "content": {
-                "title": "Your OTP - Ecommerce Verification",
-                "body": f"Hello {username},\n\nYour OTP is: {otp}\n\nValid for 10 minutes.\n\nDo not share this OTP with anyone."
-            },
-        }
-    )
 @api_view(['POST'])
 def verify_otp(request):
     try:
@@ -89,13 +73,12 @@ def verify_otp(request):
         if user.is_verified:
             return Response({'error': 'Account already verified'}, status=400)
 
-        # Check OTP expiry (10 minutes)
         expiry_time = user.otp_created_at + timedelta(minutes=10)
         if timezone.now() > expiry_time:
             return Response({'error': 'OTP has expired. Please signup again to get a new OTP.'}, status=400)
 
         if user.otp != otp:
-            return Response({'error': 'Invalid OTP. Please check your email.'}, status=400)
+            return Response({'error': 'Invalid OTP. Please check the OTP displayed.'}, status=400)
 
         user.is_active = True
         user.is_verified = True
@@ -121,16 +104,18 @@ def resend_otp(request):
             return Response({'error': 'Account already verified'}, status=400)
 
         otp = user.generate_otp()
-        send_otp_email(email, user.username, otp)
 
-        return Response({'message': 'New OTP sent to your email!'})
+        # ✅ Return OTP directly in response
+        return Response({
+            'message': 'New OTP generated.',
+            'otp': otp  # 👈 displayed on screen
+        })
 
     except CustomUser.DoesNotExist:
         return Response({'error': 'User not found'}, status=404)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
-    
-    
+
 
 @api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])
@@ -150,20 +135,21 @@ def profile(request):
         user.address = request.data.get('address', user.address)
         user.save()
         return Response({'message': 'Profile updated!'})
+
+
 @api_view(['POST'])
 def forgot_password(request):
     try:
         email = request.data.get('email')
         user = CustomUser.objects.get(email=email)
         otp = user.generate_otp()
-        send_mail(
-            'Password Reset OTP',
-            f'Your OTP to reset password is: {otp}\n\nValid for 10 minutes.',
-            settings.EMAIL_HOST_USER,
-            [email],
-            fail_silently=False,
-        )
-        return Response({'message': 'OTP sent to your email!'})
+
+        # ✅ Return OTP directly in response
+        return Response({
+            'message': 'OTP generated for password reset.',
+            'otp': otp  # 👈 displayed on screen
+        })
+
     except CustomUser.DoesNotExist:
         return Response({'error': 'No account found with this email'}, status=404)
     except Exception as e:
@@ -178,7 +164,6 @@ def reset_password(request):
         new_password = request.data.get('new_password')
         user = CustomUser.objects.get(email=email)
 
-       
         expiry = user.otp_created_at + timedelta(minutes=10)
         if timezone.now() > expiry:
             return Response({'error': 'OTP has expired'}, status=400)
@@ -191,10 +176,13 @@ def reset_password(request):
         user.otp_created_at = None
         user.save()
         return Response({'message': 'Password reset successful! You can now login.'})
+
     except CustomUser.DoesNotExist:
         return Response({'error': 'User not found'}, status=404)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def all_users(request):
