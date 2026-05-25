@@ -1,16 +1,37 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
 from .models import CustomUser
 from .serializers import CustomTokenObtainPairSerializer
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+
+def send_otp_email(email, username, otp):
+    send_mail(
+        subject='Your OTP - Verify Your Account',
+        message=f'''Hello {username},
+
+Your OTP for account verification is:
+
+{otp}
+
+This OTP is valid for 10 minutes.
+Do not share this with anyone.
+
+Thank you!''',
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[email],
+        fail_silently=False,
+    )
+
 
 @api_view(['POST'])
 def register(request):
@@ -26,12 +47,8 @@ def register(request):
             existing = CustomUser.objects.get(email=email)
             if not existing.is_verified:
                 otp = existing.generate_otp()
-                # ✅ Return OTP directly in response
-                return Response({
-                    'message': 'OTP generated.',
-                    'email': email,
-                    'otp': otp  # 👈 displayed on screen
-                })
+                send_otp_email(email, existing.username, otp)
+                return Response({'message': 'OTP resent to your email.', 'email': email})
             return Response({'error': 'Email already exists'}, status=400)
 
         if CustomUser.objects.filter(username=username).exists():
@@ -41,17 +58,17 @@ def register(request):
             username=username,
             email=email,
             password=password,
-            is_active=False
+                        is_active=False
         )
 
         otp = user.generate_otp()
 
-        # ✅ Return OTP directly in response
-        return Response({
-            'message': 'OTP generated. Please verify your account.',
-            'email': email,
-            'otp': otp  # 👈 displayed on screen
-        })
+        try:
+            send_otp_email(email, username, otp)
+        except Exception as e:
+            return Response({'error': 'Account created but email failed: ' + str(e)}, status=500)
+
+        return Response({'message': 'OTP sent to your email!', 'email': email})
 
     except Exception as e:
         import traceback
@@ -78,7 +95,7 @@ def verify_otp(request):
             return Response({'error': 'OTP has expired. Please signup again to get a new OTP.'}, status=400)
 
         if user.otp != otp:
-            return Response({'error': 'Invalid OTP. Please check the OTP displayed.'}, status=400)
+            return Response({'error': 'Invalid OTP. Please check your email.'}, status=400)
 
         user.is_active = True
         user.is_verified = True
@@ -104,12 +121,9 @@ def resend_otp(request):
             return Response({'error': 'Account already verified'}, status=400)
 
         otp = user.generate_otp()
+        send_otp_email(email, user.username, otp)
 
-        # ✅ Return OTP directly in response
-        return Response({
-            'message': 'New OTP generated.',
-            'otp': otp  # 👈 displayed on screen
-        })
+        return Response({'message': 'New OTP sent to your email!'})
 
     except CustomUser.DoesNotExist:
         return Response({'error': 'User not found'}, status=404)
@@ -143,13 +157,8 @@ def forgot_password(request):
         email = request.data.get('email')
         user = CustomUser.objects.get(email=email)
         otp = user.generate_otp()
-
-        # ✅ Return OTP directly in response
-        return Response({
-            'message': 'OTP generated for password reset.',
-            'otp': otp  # 👈 displayed on screen
-        })
-
+        send_otp_email(email, user.username, otp)
+        return Response({'message': 'OTP sent to your email!'})
     except CustomUser.DoesNotExist:
         return Response({'error': 'No account found with this email'}, status=404)
     except Exception as e:
@@ -190,18 +199,16 @@ def all_users(request):
         if not request.user.is_staff:
             return Response({'error': 'Admin access required'}, status=403)
         users = CustomUser.objects.all().order_by('-date_joined')
-        data = []
-        for user in users:
-            data.append({
-                'id': user.id,
-                'username': user.username,
-                'email': user.email,
-                'phone': user.phone,
-                'is_verified': user.is_verified,
-                'is_staff': user.is_staff,
-                'is_active': user.is_active,
-                'date_joined': user.date_joined,
-            })
+        data = [{
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'phone': user.phone,
+            'is_verified': user.is_verified,
+            'is_staff': user.is_staff,
+            'is_active': user.is_active,
+            'date_joined': user.date_joined,
+        } for user in users]
         return Response(data)
     except Exception as e:
         return Response({'error': str(e)}, status=500)

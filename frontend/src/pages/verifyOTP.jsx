@@ -50,20 +50,10 @@ function VerifyOTP() {
     }
     setLoading(false);
   };
-
-  const handleResend = async () => {
-    setResendLoading(true);
-    setError('');
-    try {
-      const res = await axios.post('https://ecommerce-backend-hanm.onrender.com/api/auth/resend-otp/', { email });
-      setMessage('New OTP generated!');
-      setDisplayOtp(res.data.otp); // 👈 update displayed OTP
-      setOtp(['', '', '', '', '', '']);
-    } catch (err) {
-      setError(err.response?.data?.error || 'Failed to resend OTP');
-    }
-    setResendLoading(false);
-  };
+<p style={{ color: '#6b7280', marginBottom: 24, fontSize: 14 }}>
+  We sent a 6-digit OTP to<br />
+  <strong style={{ color: '#4f46e5' }}>{email}</strong>
+</p>
 
   return (
     <div style={{ maxWidth: 400, margin: '80px auto', padding: 24, border: '1px solid #e5e7eb', borderRadius: 12, textAlign: 'center' }}>
