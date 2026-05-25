@@ -19,7 +19,7 @@ function Home() {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    axios.get('http://localhost:8000/api/categories/')
+    axios.get('https://ecommerce-backend-hanm.onrender.com/api/categories/')
       .then(res => setCategories(res.data))
       .catch(() => {});
   }, [dispatch]);
@@ -105,11 +105,7 @@ function Home() {
               onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
             >
               <img
-                src={
-                  product.image_url ? product.image_url
-                    : product.image ? `${product.image}`
-                    : 'https://placehold.co/300x200?text=No+Image'
-                }
+                src={product.image || 'https://placehold.co/300x200?text=No+Image'}
                 alt={product.name}
                 onError={e => { e.target.src = 'https://placehold.co/300x200?text=No+Image'; }}
                 style={{ width: '100%', height: 180, objectFit: 'cover' }}
