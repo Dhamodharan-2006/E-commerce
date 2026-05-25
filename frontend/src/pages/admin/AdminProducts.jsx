@@ -212,7 +212,8 @@ function AdminProducts() {
           <p>No products yet. Add your first product above.</p>
         </div>
       ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
+        <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14,minWidth: 500 }}>
           <thead>
             <tr style={{ background: "#f9fafb" }}>
               <th style={{ padding: "12px 14px", textAlign: "left", borderBottom: "2px solid #e5e7eb" }}>Name</th>
@@ -266,6 +267,7 @@ function AdminProducts() {
             ))}
           </tbody>
         </table>
+        </div>
       )}
     </div>
   );

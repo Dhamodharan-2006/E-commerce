@@ -172,7 +172,7 @@ function OrderTracking() {
       </div>
 
       {/* Delivery & Payment Info */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14 }}>
         <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 12, padding: 20 }}>
           <h3 style={{ marginBottom: 12, fontSize: 15 }}>📍 Delivery Address</h3>
           <p style={{ margin: 0, fontWeight: 600 }}>{order.name}</p>

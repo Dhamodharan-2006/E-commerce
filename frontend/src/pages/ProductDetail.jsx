@@ -34,7 +34,7 @@ function ProductDetail() {
         ← Back
       </button>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 32 }}>
         {/* Left - Image */}
         <div>
           <img

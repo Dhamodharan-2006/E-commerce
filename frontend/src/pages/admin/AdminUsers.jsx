@@ -63,7 +63,8 @@ function AdminUsers() {
           <p>No users found.</p>
         </div>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+        <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14,minWidth: 600 }}>
           <thead>
             <tr style={{ background: '#f9fafb' }}>
               <th style={{ padding: '12px 14px', textAlign: 'left', borderBottom: '2px solid #e5e7eb' }}>ID</th>
@@ -111,6 +112,7 @@ function AdminUsers() {
             ))}
           </tbody>
         </table>
+        </div>
       )}
     </div>
   );
