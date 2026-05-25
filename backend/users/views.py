@@ -58,7 +58,6 @@ def register(request):
         traceback.print_exc()
         return Response({'error': str(e)}, status=500)
 
-
 def send_otp_email(email, username, otp):
     send_mail(
         'Your OTP - Ecommerce Verification',
@@ -73,7 +72,7 @@ This OTP is valid for 10 minutes.
 Do not share this OTP with anyone.
 
 Thank you!''',
-        settings.EMAIL_HOST_USER,
+        'onboarding@resend.dev',  # ← change this line
         [email],
         fail_silently=False,
     )

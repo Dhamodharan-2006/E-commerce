@@ -97,13 +97,13 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.resend.com'
 EMAIL_PORT = 465
-EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
-EMAIL_HOST_USER = os.environ.get('d2341717@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('amyu vdfx ayrm pdlp')
-
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'resend'                              
+EMAIL_HOST_PASSWORD = os.environ.get('re_UFyjeLrq_EPgXc2DPWmgiWGSfcVAG1ESj')
+DEFAULT_FROM_EMAIL = 'onboarding@resend.dev'           
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_PASSWORD_VALIDATORS = [
