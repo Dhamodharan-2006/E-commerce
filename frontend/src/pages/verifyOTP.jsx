@@ -7,7 +7,6 @@ function VerifyOTP() {
   const navigate = useNavigate();
   const email = location.state?.email || '';
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [displayOtp, setDisplayOtp] = useState(location.state?.otp || ''); // 👈 OTP from backend
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -50,34 +49,28 @@ function VerifyOTP() {
     }
     setLoading(false);
   };
-<p style={{ color: '#6b7280', marginBottom: 24, fontSize: 14 }}>
-  We sent a 6-digit OTP to<br />
-  <strong style={{ color: '#4f46e5' }}>{email}</strong>
-</p>
+
+  const handleResend = async () => {
+    setResendLoading(true);
+    setError('');
+    try {
+      const res = await axios.post('https://ecommerce-backend-hanm.onrender.com/api/auth/resend-otp/', { email });
+      setMessage(res.data.message);
+      setOtp(['', '', '', '', '', '']);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to resend OTP');
+    }
+    setResendLoading(false);
+  };
 
   return (
     <div style={{ maxWidth: 400, margin: '80px auto', padding: 24, border: '1px solid #e5e7eb', borderRadius: 12, textAlign: 'center' }}>
-      <div style={{ fontSize: 50, marginBottom: 12 }}>🔐</div>
-      <h2 style={{ marginBottom: 8 }}>Verify Your Account</h2>
-      <p style={{ color: '#6b7280', marginBottom: 16, fontSize: 14 }}>
-        Enter the OTP below for<br />
+      <div style={{ fontSize: 50, marginBottom: 12 }}>📧</div>
+      <h2 style={{ marginBottom: 8 }}>Verify Your Email</h2>
+      <p style={{ color: '#6b7280', marginBottom: 24, fontSize: 14 }}>
+        We sent a 6-digit OTP to<br />
         <strong style={{ color: '#4f46e5' }}>{email}</strong>
       </p>
-
-      {/* 👇 OTP display box */}
-      {displayOtp && (
-        <div style={{
-          background: '#f0fdf4', border: '1.5px dashed #22c55e',
-          borderRadius: 10, padding: '12px 20px', marginBottom: 20
-        }}>
-          <p style={{ fontSize: 12, color: '#16a34a', marginBottom: 4, fontWeight: 600 }}>
-            🧪 Dev Mode — Your OTP
-          </p>
-          <p style={{ fontSize: 30, fontWeight: 900, letterSpacing: 8, color: '#15803d', margin: 0 }}>
-            {displayOtp}
-          </p>
-        </div>
-      )}
 
       {message && (
         <p style={{ color: 'green', background: '#f0fdf4', padding: 10, borderRadius: 6, marginBottom: 16 }}>
@@ -118,7 +111,7 @@ function VerifyOTP() {
 
       <button onClick={handleResend} disabled={resendLoading}
         style={{ background: 'transparent', border: '1px solid #4f46e5', color: '#4f46e5', padding: '8px 20px', borderRadius: 6, cursor: 'pointer', fontSize: 14 }}>
-        {resendLoading ? 'Generating...' : 'Resend OTP'}
+        {resendLoading ? 'Sending...' : 'Resend OTP'}
       </button>
 
       <p style={{ marginTop: 16, fontSize: 12, color: '#9ca3af' }}>OTP expires in 10 minutes</p>
