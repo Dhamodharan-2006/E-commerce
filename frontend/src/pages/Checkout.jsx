@@ -110,7 +110,7 @@ function Checkout() {
             {items.map(item => (
               <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #f3f4f6', gap: 10 }}>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', flex: 1, minWidth: 0 }}>
-                  <img src={item.image_url || (item.image ? `http://localhost:8000/media/${item.image}` : 'https://placehold.co/44x44?text=?')}
+                  <img src={item.image_url || (item.image ? `https://ecommerce-backend-hanm.onrender.com/media/${item.image}` : 'https://placehold.co/44x44?text=?')}
                     alt={item.name} onError={e => { e.target.src = 'https://placehold.co/44x44?text=?'; }}
                     style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
                   <div style={{ minWidth: 0 }}>
