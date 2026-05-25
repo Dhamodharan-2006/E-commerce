@@ -31,7 +31,7 @@ function AdminDashboard() {
           </div>
         </Link>
 
-        <a href="http://localhost:8000/admin" target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+        <a href="https://ecommerce-backend-hanm.onrender.com/admin" target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
           <div style={{ padding: 24, background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 10, textAlign: 'center', cursor: 'pointer' }}>
             <div style={{ fontSize: 40, marginBottom: 10 }}>🔧</div>
             <h3 style={{ color: '#9a3412', margin: 0 }}>Django Admin</h3>
