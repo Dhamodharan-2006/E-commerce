@@ -12,22 +12,23 @@ from django.core.mail import send_mail
 from django.conf import settings
 import requests
 import os
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
-
-
-
-
-
 def send_otp_email(email, username, otp):
-    response = requests.post(
-        os.environ.get('GOOGLE_SCRIPT_URL'),
-        json={
-            'to': email,
-            'subject': 'Your OTP - Verify Your Account',
-            'body': f'Hello {username},\n\nYour OTP is: {otp}\n\nValid for 10 minutes.'
-        }
-    )
+    try:
+        response = requests.post(
+            os.environ.get('GOOGLE_SCRIPT_URL'),
+            json={
+                'to': email,
+                'subject': 'Your OTP - Verify Your Account',
+                'body': f'Hello {username},\n\nYour OTP is: {otp}\n\nValid for 10 minutes.'
+            }
+        )
+        print("SCRIPT RESPONSE:", response.status_code, response.text)
+    except Exception as e:
+        print("SCRIPT ERROR:", str(e))
+        raise e
 
 @api_view(['POST'])
 def register(request):
