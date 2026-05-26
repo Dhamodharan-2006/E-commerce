@@ -8,6 +8,8 @@ from django.utils import timezone
 from datetime import timedelta
 from .models import CustomUser
 from .serializers import CustomTokenObtainPairSerializer
+import resend
+import os
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -15,9 +17,12 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 
 def send_otp_email(email, username, otp):
-    send_mail(
-        subject='Your OTP - Verify Your Account',
-        message=f'''Hello {username},
+    resend.api_key = os.environ.get('RESEND_API_KEY')
+    resend.Emails.send({
+        "from": "onboarding@resend.dev",
+        "to": email,
+        "subject": "Your OTP - Verify Your Account",
+        "text": f"""Hello {username},
 
 Your OTP for account verification is:
 
@@ -26,11 +31,8 @@ Your OTP for account verification is:
 This OTP is valid for 10 minutes.
 Do not share this with anyone.
 
-Thank you!''',
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[email],
-        fail_silently=False,
-    )
+Thank you!"""
+    })
 
 
 @api_view(['POST'])
@@ -47,7 +49,10 @@ def register(request):
             existing = CustomUser.objects.get(email=email)
             if not existing.is_verified:
                 otp = existing.generate_otp()
-                send_otp_email(email, existing.username, otp)
+                try:
+                    send_otp_email(email, existing.username, otp)
+                except Exception as e:
+                    return Response({'error': 'Failed to send OTP: ' + str(e)}, status=500)
                 return Response({'message': 'OTP resent to your email.', 'email': email})
             return Response({'error': 'Email already exists'}, status=400)
 
