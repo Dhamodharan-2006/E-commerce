@@ -16,28 +16,22 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
+import requests
+
 def send_otp_email(email, username, otp):
-    mailjet = Client(
-        auth=(
-            os.environ.get('MAILJET_API_KEY'),
-            os.environ.get('MAILJET_SECRET_KEY')
-        ),
-        version='v3.1'
+    response = requests.post(
+        'https://api.elasticemail.com/v2/email/send',
+        data={
+            'apikey': os.environ.get('ELASTIC_EMAIL_API_KEY'),
+            'from': 'your_gmail@gmail.com',
+            'to': email,
+            'subject': 'Your OTP - Verify Your Account',
+            'bodyText': f'Hello {username},\n\nYour OTP is: {otp}\n\nValid for 10 minutes.',
+            'isTransactional': True
+        }
     )
-    data = {
-        'Messages': [{
-            'From': {
-                'Email': 'your_gmail@gmail.com',
-                'Name': 'Your Shop'
-            },
-            'To': [{'Email': email}],
-            'Subject': 'Your OTP - Verify Your Account',
-            'TextPart': f'Hello {username},\n\nYour OTP is: {otp}\n\nValid for 10 minutes.'
-        }]
-    }
-    mailjet.send.create(data=data)
-
-
+    if response.json().get('success') != True:
+        raise Exception('Email sending failed: ' + str(response.json()))
 
 @api_view(['POST'])
 def register(request):
