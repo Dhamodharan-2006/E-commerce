@@ -21,18 +21,13 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 def send_otp_email(email, username, otp):
     response = requests.post(
-        'https://api.elasticemail.com/v2/email/send',
-        data={
-            'apikey': os.environ.get('ELASTIC_EMAIL_API_KEY'),
-            'from': 'sdhamodharan2006@gmail.com',
+        os.environ.get('GOOGLE_SCRIPT_URL'),
+        json={
             'to': email,
             'subject': 'Your OTP - Verify Your Account',
-            'bodyText': f'Hello {username},\n\nYour OTP is: {otp}\n\nValid for 10 minutes.',
-            'isTransactional': True
+            'body': f'Hello {username},\n\nYour OTP is: {otp}\n\nValid for 10 minutes.'
         }
     )
-    if response.json().get('success') != True:
-        raise Exception('Email sending failed: ' + str(response.json()))
 
 @api_view(['POST'])
 def register(request):
