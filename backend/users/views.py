@@ -10,20 +10,32 @@ from .models import CustomUser
 from .serializers import CustomTokenObtainPairSerializer
 from django.core.mail import send_mail
 from django.conf import settings
-
+from mailjet_rest import Client
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
 def send_otp_email(email, username, otp):
-    send_mail(
-        subject='Your OTP - Verify Your Account',
-        message=f'Hello {username},\n\nYour OTP is: {otp}\n\nValid for 10 minutes.',
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[email],
-        fail_silently=False,
+    mailjet = Client(
+        auth=(
+            os.environ.get('MAILJET_API_KEY'),
+            os.environ.get('MAILJET_SECRET_KEY')
+        ),
+        version='v3.1'
     )
+    data = {
+        'Messages': [{
+            'From': {
+                'Email': 'your_gmail@gmail.com',
+                'Name': 'Your Shop'
+            },
+            'To': [{'Email': email}],
+            'Subject': 'Your OTP - Verify Your Account',
+            'TextPart': f'Hello {username},\n\nYour OTP is: {otp}\n\nValid for 10 minutes.'
+        }]
+    }
+    mailjet.send.create(data=data)
 
 
 
