@@ -16,16 +16,34 @@ import os
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 def send_otp_email(email, username, otp):
+    body = f"""Hello {username},
+
+Thank you for registering with our store!
+
+Your One-Time Password (OTP) for account verification is:
+
+🔐 {otp}
+
+This OTP is valid for 10 minutes only.
+Do not share this OTP with anyone.
+
+If you did not request this, please ignore this email.
+
+Thanks,
+The Shop Team"""
+
     try:
         response = requests.post(
             os.environ.get('GOOGLE_SCRIPT_URL'),
             json={
                 'to': email,
                 'subject': 'Your OTP - Verify Your Account',
-                'body': f'Hello {username},\n\nYour OTP is: {otp}\n\nValid for 10 minutes.'
+                'body': body
             }
         )
         print("SCRIPT RESPONSE:", response.status_code, response.text)
+        if response.status_code != 200:
+            raise Exception(f"Script returned {response.status_code}: {response.text}")
     except Exception as e:
         print("SCRIPT ERROR:", str(e))
         raise e

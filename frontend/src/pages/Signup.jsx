@@ -38,6 +38,9 @@ function Signup() {
             ❌ {localError || error}
           </p>
         )}
+        <p style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 6, padding: '8px 12px', fontSize: 13, color: '#92400e', marginBottom: 14 }}>
+  📧 OTP email may land in your <strong>Spam/Junk</strong> folder. Please check there if you don't see it in inbox.
+</p>
 
         <form onSubmit={handleSubmit}>
           {[
