@@ -11,7 +11,7 @@ from .serializers import CustomTokenObtainPairSerializer
 from django.core.mail import send_mail
 from django.conf import settings
 from mailjet_rest import Client
-
+import os
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
