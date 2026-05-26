@@ -8,8 +8,8 @@ from django.utils import timezone
 from datetime import timedelta
 from .models import CustomUser
 from .serializers import CustomTokenObtainPairSerializer
-import resend
-import os
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -17,22 +17,14 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 
 def send_otp_email(email, username, otp):
-    resend.api_key = os.environ.get('RESEND_API_KEY')
-    resend.Emails.send({
-        "from": "onboarding@resend.dev",
-        "to": email,
-        "subject": "Your OTP - Verify Your Account",
-        "text": f"""Hello {username},
+    send_mail(
+        subject='Your OTP - Verify Your Account',
+        message=f'Hello {username},\n\nYour OTP is: {otp}\n\nValid for 10 minutes.',
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[email],
+        fail_silently=False,
+    )
 
-Your OTP for account verification is:
-
-{otp}
-
-This OTP is valid for 10 minutes.
-Do not share this with anyone.
-
-Thank you!"""
-    })
 
 
 @api_view(['POST'])
