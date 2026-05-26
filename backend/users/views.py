@@ -10,20 +10,21 @@ from .models import CustomUser
 from .serializers import CustomTokenObtainPairSerializer
 from django.core.mail import send_mail
 from django.conf import settings
-from mailjet_rest import Client
+import requests
 import os
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
-import requests
+
+
 
 def send_otp_email(email, username, otp):
     response = requests.post(
         'https://api.elasticemail.com/v2/email/send',
         data={
             'apikey': os.environ.get('ELASTIC_EMAIL_API_KEY'),
-            'from': 'your_gmail@gmail.com',
+            'from': 'sdhamodharan2006@gmail.com',
             'to': email,
             'subject': 'Your OTP - Verify Your Account',
             'bodyText': f'Hello {username},\n\nYour OTP is: {otp}\n\nValid for 10 minutes.',
