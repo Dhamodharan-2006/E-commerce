@@ -17,7 +17,7 @@ function ForgotPassword() {
     e.preventDefault();
     setLoading(true); setError('');
     try {
-      const res = await axios.post('http://localhost:8000/api/auth/forgot-password/', { email });
+      const res = await axios.post('https://ecommerce-backend-hanm.onrender.com/api/auth/forgot-password/', { email });
       setMessage(res.data.message);
       setStep(2);
     } catch (err) {
@@ -48,7 +48,7 @@ function ForgotPassword() {
     if (newPassword.length < 6) { setError('Password must be at least 6 characters'); return; }
     setLoading(true); setError('');
     try {
-      const res = await axios.post('http://localhost:8000/api/auth/reset-password/', {
+      const res = await axios.post('https://ecommerce-backend-hanm.onrender.com/api/auth/reset-password/', {
         email, otp: otp.join(''), new_password: newPassword
       });
       setMessage(res.data.message);

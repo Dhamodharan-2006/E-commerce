@@ -11,7 +11,7 @@ function VerifyEmail() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/auth/verify/${uidb64}/${token}/`)
+      .get(`https://ecommerce-backend-hanm.onrender.com/api/auth/verify/${uidb64}/${token}/`)
       .then((res) => {
         setMessage(res.data.message);
         setSuccess(true);
