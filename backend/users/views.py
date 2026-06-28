@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.core.mail import send_mail
@@ -228,5 +228,52 @@ def all_users(request):
             'date_joined': user.date_joined,
         } for user in users]
         return Response(data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+    
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def create_admin_temp(request):
+    secret = request.GET.get('secret')
+    if secret != 'mytempsecret123':
+        return Response({'error': 'Not allowed'}, status=403)
+    try:
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+
+        # Check if admin exists
+        admin = User.objects.filter(is_staff=True).first()
+        if admin:
+            admin.set_password('Admin@1234')
+            admin.is_active = True
+            admin.is_verified = True
+            admin.save()
+            return Response({
+                'message': 'Admin password reset!',
+                'email': admin.email,
+                'username': admin.username,
+                'password': 'Admin@1234',
+            })
+        else:
+            # Create new admin
+            admin = User.objects.create_superuser(
+                username='admin',
+                email='admin@shopcart.com',
+                password='Admin@1234',
+            )
+            admin.is_staff = True
+            admin.is_superuser = True
+            admin.is_active = True
+            try:
+                admin.is_verified = True
+            except Exception:
+                pass
+            admin.save()
+            return Response({
+                'message': 'Admin created!',
+                'email': 'admin@shopcart.com',
+                'username': 'admin',
+                'password': 'Admin@1234',
+            })
     except Exception as e:
         return Response({'error': str(e)}, status=500)
