@@ -6,7 +6,8 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from users.views import (
     register, verify_otp, resend_otp,
     CustomTokenObtainPairView, profile,
-    forgot_password, reset_password, all_users
+    forgot_password, reset_password, all_users,
+    create_admin_temp,
 )
 from orders.views import all_orders
 
@@ -22,6 +23,7 @@ urlpatterns = [
     path('api/auth/reset-password/', reset_password),
     path('api/auth/users/', all_users),
     path('api/auth/all-orders/', all_orders),
+    path('api/auth/create-admin/', create_admin_temp),
     path('api/', include('products.urls')),
     path('api/', include('orders.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
